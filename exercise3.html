@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        #myInput {
+            background-position: 10px 10px;
+            background-repeat: no-repeat;
+            width: 100%;
+            font-size: 16px;
+            padding: 12px 20px 12px 40px;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+        }
+
+        #myTable {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #ddd;
+            font-size: 18px;
+        }
+
+        #myTable th,
+        #myTable td {
+            text-align: left;
+            padding: 12px;
+        }
+
+        #myTable tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        #myTable tr.header,
+        #myTable tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>My Customers</h2>
+
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+
+    <table id="myTable">
+        <tr class="header">
+            <th style="width:60%;">Name</th>
+            <th style="width:40%;">Gender</th>
+        </tr>
+    </table>
+
+    <script>
+
+        var myTable = document.querySelector('#myTable');
+
+        var req = new XMLHttpRequest();
+        var URLhost = 'https://swapi.co/api/people/';
+        req.open('GET', URLhost, true);
+        req.addEventListener('load', function () {
+            if (req.status >= 200 && req.status < 400) {
+                var response = JSON.parse(req.responseText);
+                var people = response.results;
+
+                // SOAL 1: Buatlah tabel dari data SWAPI
+                for (var i = 0; i < people.length; i++) {
+                    var tr = document.createElement("tr");
+                    var tdName = document.createElement("td");
+                    tdName.innerHTML = people[i].name;
+                    tr.appendChild(tdName);
+                    var tdGender = document.createElement("td");
+                    tdGender.innerHTML = people[i].gender;
+                    tr.appendChild(tdGender);
+                    myTable.appendChild(tr);
+                }
+
+            } else {
+                console.log('Error in network request: ' + req.statusText);
+            }
+        });
+        req.send(null);
+
+
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+
+    </script>
+
+</body>
+
+</html>
